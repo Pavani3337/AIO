@@ -1,0 +1,92 @@
+/* style.css */
+
+body{
+    margin:0;
+    font-family:Arial;
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    color:white;
+}
+
+.container{
+    padding:20px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.dashboard{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.card{
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(10px);
+    padding:20px;
+    width:220px;
+    text-align:center;
+    border-radius:15px;
+    box-shadow:0 0 10px rgba(0,0,0,0.3);
+}
+
+.section{
+    background:rgba(255,255,255,0.08);
+    margin:25px auto;
+    padding:20px;
+    border-radius:15px;
+    width:90%;
+    max-width:800px;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:none;
+    border-radius:10px;
+}
+
+textarea{
+    height:100px;
+}
+
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    margin:5px;
+    font-weight:bold;
+}
+
+#timer{
+    font-size:60px;
+    text-align:center;
+    margin:20px;
+}
+
+.task{
+    background:rgba(255,255,255,0.1);
+    padding:15px;
+    border-radius:10px;
+    margin-top:10px;
+}
+
+.note{
+    background:rgba(255,255,255,0.1);
+    padding:15px;
+    border-radius:10px;
+    margin-top:10px;
+}
+
+canvas{
+    background:white;
+    border-radius:10px;
+    padding:10px;
+}
