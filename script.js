@@ -1,31 +1,49 @@
-let subjects = JSON.parse(localStorage.getItem("subjects")) || [];
+// =======================
+// DATA
+// =======================
+
+let subjects =
+JSON.parse(localStorage.getItem("subjects")) || [];
 
 let currentSubject = null;
 
 let chart;
 
+// =======================
 // SAVE
+// =======================
+
 function saveData(){
-    localStorage.setItem("subjects",JSON.stringify(subjects));
+
+    localStorage.setItem(
+        "subjects",
+        JSON.stringify(subjects)
+    );
 }
 
 // =======================
-// SUBJECTS
+// ADD SUBJECT
 // =======================
 
 function addSubject(){
 
-    let input = document.getElementById("subjectInput");
+    let input =
+    document.getElementById("subjectInput");
 
     let name = input.value.trim();
 
     if(!name) return;
 
     subjects.push({
+
         name:name,
+
         tasks:[],
+
         notes:[],
+
         streak:0,
+
         sessions:0
     });
 
@@ -36,23 +54,67 @@ function addSubject(){
     renderSubjects();
 }
 
+// =======================
+// DELETE SUBJECT
+// =======================
+
+function deleteSubject(index){
+
+    let confirmDelete =
+    confirm("Delete this subject?");
+
+    if(confirmDelete){
+
+        subjects.splice(index,1);
+
+        saveData();
+
+        renderSubjects();
+    }
+}
+
+// =======================
+// RENDER SUBJECTS
+// =======================
+
 function renderSubjects(){
 
-    let container = document.getElementById("subjectsContainer");
+    let container =
+    document.getElementById("subjectsContainer");
 
     container.innerHTML="";
 
     subjects.forEach((sub,index)=>{
 
+        let completed =
+        sub.tasks.filter(t=>t.done).length;
+
         container.innerHTML += `
-        <div class="subjectCard"
-             onclick="openDashboard(${index})">
 
-            <h2>📘 ${sub.name}</h2>
+        <div class="subjectCard">
 
-            <p>
-                Tasks: ${sub.tasks.length}
-            </p>
+            <div
+                class="subjectInfo"
+                onclick="openDashboard(${index})"
+            >
+
+                <h2>📘 ${sub.name}</h2>
+
+                <p>
+                    📋 Total Tasks:
+                    ${sub.tasks.length}
+                </p>
+
+                <p>
+                    ✅ Completed:
+                    ${completed}
+                </p>
+
+            </div>
+
+            <button onclick="deleteSubject(${index})">
+                Delete Subject
+            </button>
 
         </div>
         `;
@@ -67,11 +129,17 @@ function openDashboard(index){
 
     currentSubject = subjects[index];
 
-    document.getElementById("homeScreen").style.display="none";
+    document.getElementById(
+        "homeScreen"
+    ).style.display="none";
 
-    document.getElementById("dashboardScreen").style.display="block";
+    document.getElementById(
+        "dashboardScreen"
+    ).style.display="block";
 
-    document.getElementById("subjectTitle").innerText =
+    document.getElementById(
+        "subjectTitle"
+    ).innerText =
     "📘 " + currentSubject.name;
 
     renderTasks();
@@ -83,11 +151,21 @@ function openDashboard(index){
     updateChart();
 }
 
+// =======================
+// BACK HOME
+// =======================
+
 function goHome(){
 
-    document.getElementById("dashboardScreen").style.display="none";
+    document.getElementById(
+        "dashboardScreen"
+    ).style.display="none";
 
-    document.getElementById("homeScreen").style.display="block";
+    document.getElementById(
+        "homeScreen"
+    ).style.display="block";
+
+    renderSubjects();
 }
 
 // =======================
@@ -96,14 +174,17 @@ function goHome(){
 
 function addTask(){
 
-    let input = document.getElementById("taskInput");
+    let input =
+    document.getElementById("taskInput");
 
     let text = input.value.trim();
 
     if(!text) return;
 
     currentSubject.tasks.push({
+
         text:text,
+
         done:false
     });
 
@@ -151,23 +232,29 @@ function deleteTask(i){
 
 function renderTasks(){
 
-    let container = document.getElementById("taskList");
+    let container =
+    document.getElementById("taskList");
 
     container.innerHTML="";
 
     currentSubject.tasks.forEach((task,i)=>{
 
         container.innerHTML += `
+
         <div class="task">
 
             <h3>${task.text}</h3>
 
             <button onclick="toggleTask(${i})">
+
                 ${task.done ? "Undo":"Done"}
+
             </button>
 
             <button onclick="deleteTask(${i})">
+
                 Delete
+
             </button>
 
         </div>
@@ -181,7 +268,8 @@ function renderTasks(){
 
 function saveNote(){
 
-    let input = document.getElementById("noteInput");
+    let input =
+    document.getElementById("noteInput");
 
     let text = input.value.trim();
 
@@ -207,7 +295,9 @@ function renderNotes(){
 
         container.innerHTML += `
         <div class="note">
+
             ${note}
+
         </div>
         `;
     });
@@ -220,15 +310,22 @@ function renderNotes(){
 function updateStats(){
 
     let completed =
-    currentSubject.tasks.filter(t=>t.done).length;
+    currentSubject.tasks.filter(
+        t=>t.done
+    ).length;
 
-    document.getElementById("taskCount").innerText =
-    completed;
+    document.getElementById(
+        "taskCount"
+    ).innerText = completed;
 
-    document.getElementById("sessionCount").innerText =
+    document.getElementById(
+        "sessionCount"
+    ).innerText =
     currentSubject.sessions;
 
-    document.getElementById("streakCount").innerText =
+    document.getElementById(
+        "streakCount"
+    ).innerText =
     currentSubject.streak;
 }
 
@@ -236,27 +333,34 @@ function updateStats(){
 // TIMER
 // =======================
 
-let totalSeconds = 25*60;
+let totalSeconds = 25 * 60;
 
 let timer;
 
-let running=false;
+let running = false;
 
 function updateTimer(){
 
-    let min = Math.floor(totalSeconds/60);
+    let min =
+    Math.floor(totalSeconds/60);
 
-    let sec = totalSeconds%60;
+    let sec =
+    totalSeconds%60;
 
-    document.getElementById("timer").innerText =
-    `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+    document.getElementById(
+        "timer"
+    ).innerText =
+
+    `${String(min).padStart(2,"0")}
+    :
+    ${String(sec).padStart(2,"0")}`;
 }
 
 function startTimer(){
 
     if(running) return;
 
-    running=true;
+    running = true;
 
     timer = setInterval(()=>{
 
@@ -278,9 +382,11 @@ function startTimer(){
 
             confetti();
 
-            alert("Study Session Completed!");
+            alert(
+                "Study Session Completed!"
+            );
 
-            totalSeconds=25*60;
+            totalSeconds = 25*60;
 
             updateTimer();
 
@@ -317,23 +423,39 @@ updateTimer();
 function updateChart(){
 
     let completed =
-    currentSubject.tasks.filter(t=>t.done).length;
+    currentSubject.tasks.filter(
+        t=>t.done
+    ).length;
 
     let pending =
-    currentSubject.tasks.length - completed;
+    currentSubject.tasks.length
+    - completed;
 
     if(chart){
         chart.destroy();
     }
 
-    let ctx = document.getElementById("chart");
+    let ctx =
+    document.getElementById("chart");
 
     chart = new Chart(ctx,{
+
         type:"doughnut",
+
         data:{
-            labels:["Completed","Pending"],
+
+            labels:[
+                "Completed",
+                "Pending"
+            ],
+
             datasets:[{
-                data:[completed,pending]
+
+                data:[
+                    completed,
+                    pending
+                ]
+
             }]
         }
     });

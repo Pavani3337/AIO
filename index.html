@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>AI Study Assistant</title>
 
 <link rel="stylesheet" href="style.css">
@@ -18,9 +20,13 @@
 
     <h1>🧠 AI Study Assistant</h1>
 
+    <!-- ADD SUBJECT -->
     <div class="addSubject">
 
-        <input id="subjectInput" placeholder="Enter Subject Name">
+        <input
+            id="subjectInput"
+            placeholder="Enter Subject Name"
+        >
 
         <button onclick="addSubject()">
             Add Subject
@@ -28,11 +34,12 @@
 
     </div>
 
+    <!-- SUBJECTS -->
     <div id="subjectsContainer"></div>
 
 </div>
 
-<!-- SUBJECT DASHBOARD -->
+<!-- DASHBOARD -->
 <div id="dashboardScreen" style="display:none;">
 
     <button onclick="goHome()">⬅ Back</button>
@@ -54,7 +61,7 @@
 
         <div class="card">
             <h2 id="streakCount">0</h2>
-            <p>🔥 Streak</p>
+            <p>🔥 Study Streak</p>
         </div>
 
     </div>
@@ -64,9 +71,14 @@
 
         <h2>📅 Tasks</h2>
 
-        <input id="taskInput" placeholder="Enter Task">
+        <input
+            id="taskInput"
+            placeholder="Enter Study Task"
+        >
 
-        <button onclick="addTask()">Add Task</button>
+        <button onclick="addTask()">
+            Add Task
+        </button>
 
         <div id="taskList"></div>
 
@@ -79,9 +91,17 @@
 
         <div id="timer">25:00</div>
 
-        <button onclick="startTimer()">Start</button>
-        <button onclick="pauseTimer()">Pause</button>
-        <button onclick="resetTimer()">Reset</button>
+        <button onclick="startTimer()">
+            Start
+        </button>
+
+        <button onclick="pauseTimer()">
+            Pause
+        </button>
+
+        <button onclick="resetTimer()">
+            Reset
+        </button>
 
     </div>
 
@@ -90,9 +110,14 @@
 
         <h2>📝 Notes</h2>
 
-        <textarea id="noteInput" placeholder="Write notes..."></textarea>
+        <textarea
+            id="noteInput"
+            placeholder="Write notes..."
+        ></textarea>
 
-        <button onclick="saveNote()">Save Note</button>
+        <button onclick="saveNote()">
+            Save Note
+        </button>
 
         <div id="notesContainer"></div>
 
