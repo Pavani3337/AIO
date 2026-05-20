@@ -1,90 +1,152 @@
-// script.js
+let subjects = JSON.parse(localStorage.getItem("subjects")) || [];
 
-// ======================
-// LOCAL STORAGE
-// ======================
+let currentSubject = null;
 
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-let notes = JSON.parse(localStorage.getItem("notes")) || [];
-let streak = localStorage.getItem("streak") || 0;
-let sessions = localStorage.getItem("sessions") || 0;
+let chart;
 
-// ======================
-// DASHBOARD UPDATE
-// ======================
-
-function updateDashboard(){
-
-    document.getElementById("studyStreak").innerText = streak;
-
-    document.getElementById("focusSessions").innerText = sessions;
-
-    let completed = tasks.filter(t=>t.done).length;
-
-    document.getElementById("completedTasks").innerText = completed;
+// SAVE
+function saveData(){
+    localStorage.setItem("subjects",JSON.stringify(subjects));
 }
 
-// ======================
-// TASKS
-// ======================
+// =======================
+// SUBJECTS
+// =======================
 
-function saveTasks(){
-    localStorage.setItem("tasks",JSON.stringify(tasks));
-}
+function addSubject(){
 
-function addTask(){
+    let input = document.getElementById("subjectInput");
 
-    let text = document.getElementById("taskInput").value.trim();
+    let name = input.value.trim();
 
-    let subject = document.getElementById("subjectSelect").value;
+    if(!name) return;
 
-    if(!text) return;
-
-    tasks.push({
-        text,
-        subject,
-        done:false
+    subjects.push({
+        name:name,
+        tasks:[],
+        notes:[],
+        streak:0,
+        sessions:0
     });
 
-    document.getElementById("taskInput").value="";
+    input.value="";
 
-    saveTasks();
+    saveData();
+
+    renderSubjects();
+}
+
+function renderSubjects(){
+
+    let container = document.getElementById("subjectsContainer");
+
+    container.innerHTML="";
+
+    subjects.forEach((sub,index)=>{
+
+        container.innerHTML += `
+        <div class="subjectCard"
+             onclick="openDashboard(${index})">
+
+            <h2>📘 ${sub.name}</h2>
+
+            <p>
+                Tasks: ${sub.tasks.length}
+            </p>
+
+        </div>
+        `;
+    });
+}
+
+// =======================
+// OPEN DASHBOARD
+// =======================
+
+function openDashboard(index){
+
+    currentSubject = subjects[index];
+
+    document.getElementById("homeScreen").style.display="none";
+
+    document.getElementById("dashboardScreen").style.display="block";
+
+    document.getElementById("subjectTitle").innerText =
+    "📘 " + currentSubject.name;
 
     renderTasks();
 
-    updateChart();
+    renderNotes();
 
-    detectWeakSubject();
+    updateStats();
+
+    updateChart();
+}
+
+function goHome(){
+
+    document.getElementById("dashboardScreen").style.display="none";
+
+    document.getElementById("homeScreen").style.display="block";
+}
+
+// =======================
+// TASKS
+// =======================
+
+function addTask(){
+
+    let input = document.getElementById("taskInput");
+
+    let text = input.value.trim();
+
+    if(!text) return;
+
+    currentSubject.tasks.push({
+        text:text,
+        done:false
+    });
+
+    input.value="";
+
+    saveData();
+
+    renderTasks();
+
+    updateStats();
+
+    updateChart();
 }
 
 function toggleTask(i){
 
-    tasks[i].done = !tasks[i].done;
+    currentSubject.tasks[i].done =
+    !currentSubject.tasks[i].done;
 
-    if(tasks[i].done){
+    if(currentSubject.tasks[i].done){
         confetti();
     }
 
-    saveTasks();
+    saveData();
 
     renderTasks();
 
-    updateDashboard();
+    updateStats();
 
     updateChart();
 }
 
 function deleteTask(i){
 
-    tasks.splice(i,1);
+    currentSubject.tasks.splice(i,1);
 
-    saveTasks();
+    saveData();
 
     renderTasks();
 
-    updateChart();
+    updateStats();
 
-    detectWeakSubject();
+    updateChart();
 }
 
 function renderTasks(){
@@ -93,17 +155,15 @@ function renderTasks(){
 
     container.innerHTML="";
 
-    tasks.forEach((t,i)=>{
+    currentSubject.tasks.forEach((task,i)=>{
 
         container.innerHTML += `
         <div class="task">
 
-            <h3>${t.text}</h3>
-
-            <p>📘 ${t.subject}</p>
+            <h3>${task.text}</h3>
 
             <button onclick="toggleTask(${i})">
-                ${t.done ? "Undo":"Done"}
+                ${task.done ? "Undo":"Done"}
             </button>
 
             <button onclick="deleteTask(${i})">
@@ -113,21 +173,79 @@ function renderTasks(){
         </div>
         `;
     });
-
-    updateDashboard();
 }
 
-// ======================
+// =======================
+// NOTES
+// =======================
+
+function saveNote(){
+
+    let input = document.getElementById("noteInput");
+
+    let text = input.value.trim();
+
+    if(!text) return;
+
+    currentSubject.notes.push(text);
+
+    input.value="";
+
+    saveData();
+
+    renderNotes();
+}
+
+function renderNotes(){
+
+    let container =
+    document.getElementById("notesContainer");
+
+    container.innerHTML="";
+
+    currentSubject.notes.forEach(note=>{
+
+        container.innerHTML += `
+        <div class="note">
+            ${note}
+        </div>
+        `;
+    });
+}
+
+// =======================
+// STATS
+// =======================
+
+function updateStats(){
+
+    let completed =
+    currentSubject.tasks.filter(t=>t.done).length;
+
+    document.getElementById("taskCount").innerText =
+    completed;
+
+    document.getElementById("sessionCount").innerText =
+    currentSubject.sessions;
+
+    document.getElementById("streakCount").innerText =
+    currentSubject.streak;
+}
+
+// =======================
 // TIMER
-// ======================
+// =======================
 
 let totalSeconds = 25*60;
+
 let timer;
+
 let running=false;
 
 function updateTimer(){
 
     let min = Math.floor(totalSeconds/60);
+
     let sec = totalSeconds%60;
 
     document.getElementById("timer").innerText =
@@ -140,7 +258,7 @@ function startTimer(){
 
     running=true;
 
-    timer=setInterval(()=>{
+    timer = setInterval(()=>{
 
         totalSeconds--;
 
@@ -152,13 +270,11 @@ function startTimer(){
 
             running=false;
 
-            sessions++;
+            currentSubject.sessions++;
 
-            localStorage.setItem("sessions",sessions);
+            currentSubject.streak++;
 
-            streak++;
-
-            localStorage.setItem("streak",streak);
+            saveData();
 
             confetti();
 
@@ -168,14 +284,16 @@ function startTimer(){
 
             updateTimer();
 
-            updateDashboard();
+            updateStats();
         }
 
     },1000);
 }
 
 function pauseTimer(){
+
     clearInterval(timer);
+
     running=false;
 }
 
@@ -192,129 +310,37 @@ function resetTimer(){
 
 updateTimer();
 
-// ======================
-// NOTES
-// ======================
-
-function saveNote(){
-
-    let text = document.getElementById("noteInput").value.trim();
-
-    if(!text) return;
-
-    notes.push(text);
-
-    localStorage.setItem("notes",JSON.stringify(notes));
-
-    document.getElementById("noteInput").value="";
-
-    renderNotes();
-}
-
-function renderNotes(){
-
-    let container = document.getElementById("notesContainer");
-
-    container.innerHTML="";
-
-    notes.forEach(n=>{
-
-        container.innerHTML += `
-        <div class="note">
-            ${n}
-        </div>
-        `;
-    });
-}
-
-// ======================
-// ANALYTICS
-// ======================
-
-let chart;
+// =======================
+// CHART
+// =======================
 
 function updateChart(){
 
-    let subjects = {};
+    let completed =
+    currentSubject.tasks.filter(t=>t.done).length;
 
-    tasks.forEach(t=>{
-
-        if(!subjects[t.subject]){
-            subjects[t.subject]=0;
-        }
-
-        if(t.done){
-            subjects[t.subject]++;
-        }
-    });
-
-    let labels = Object.keys(subjects);
-
-    let data = Object.values(subjects);
+    let pending =
+    currentSubject.tasks.length - completed;
 
     if(chart){
         chart.destroy();
     }
 
-    let ctx = document.getElementById("studyChart");
+    let ctx = document.getElementById("chart");
 
     chart = new Chart(ctx,{
-        type:"bar",
+        type:"doughnut",
         data:{
-            labels:labels,
+            labels:["Completed","Pending"],
             datasets:[{
-                label:"Completed Tasks",
-                data:data
+                data:[completed,pending]
             }]
         }
     });
 }
 
-// ======================
-// WEAK SUBJECT
-// ======================
-
-function detectWeakSubject(){
-
-    let counts={};
-
-    tasks.forEach(t=>{
-
-        if(!counts[t.subject]){
-            counts[t.subject]=0;
-        }
-
-        if(t.done){
-            counts[t.subject]++;
-        }
-    });
-
-    let weak="";
-
-    let min=Infinity;
-
-    for(let sub in counts){
-
-        if(counts[sub]<min){
-
-            min=counts[sub];
-
-            weak=sub;
-        }
-    }
-
-    if(weak){
-        document.getElementById("weakSubject").innerText =
-        `⚠ You are weak in ${weak}`;
-    }
-}
-
-// ======================
+// =======================
 // INIT
-// ======================
+// =======================
 
-renderTasks();
-renderNotes();
-updateDashboard();
-updateChart();
-detectWeakSubject();
+renderSubjects();

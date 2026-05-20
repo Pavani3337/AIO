@@ -1,10 +1,9 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Study Assistant Dashboard</title>
+<title>AI Study Assistant</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -14,44 +13,58 @@
 </head>
 <body>
 
-<div class="container">
+<!-- HOME SCREEN -->
+<div id="homeScreen">
 
-    <h1>🧠 AI Study Assistant Dashboard</h1>
+    <h1>🧠 AI Study Assistant</h1>
 
-    <!-- DASHBOARD -->
+    <div class="addSubject">
+
+        <input id="subjectInput" placeholder="Enter Subject Name">
+
+        <button onclick="addSubject()">
+            Add Subject
+        </button>
+
+    </div>
+
+    <div id="subjectsContainer"></div>
+
+</div>
+
+<!-- SUBJECT DASHBOARD -->
+<div id="dashboardScreen" style="display:none;">
+
+    <button onclick="goHome()">⬅ Back</button>
+
+    <h1 id="subjectTitle"></h1>
+
+    <!-- STATS -->
     <div class="dashboard">
 
         <div class="card">
-            <h2 id="studyStreak">0</h2>
-            <p>🔥 Study Streak</p>
-        </div>
-
-        <div class="card">
-            <h2 id="completedTasks">0</h2>
+            <h2 id="taskCount">0</h2>
             <p>✅ Completed Tasks</p>
         </div>
 
         <div class="card">
-            <h2 id="focusSessions">0</h2>
-            <p>⏳ Focus Sessions</p>
+            <h2 id="sessionCount">0</h2>
+            <p>⏳ Sessions</p>
+        </div>
+
+        <div class="card">
+            <h2 id="streakCount">0</h2>
+            <p>🔥 Streak</p>
         </div>
 
     </div>
 
-    <!-- TASK SECTION -->
+    <!-- TASKS -->
     <div class="section">
 
-        <h2>📅 Study Planner</h2>
+        <h2>📅 Tasks</h2>
 
-        <input id="taskInput" placeholder="Enter Study Task">
-
-        <select id="subjectSelect">
-            <option>DBMS</option>
-            <option>React</option>
-            <option>JavaScript</option>
-            <option>UPSC History</option>
-            <option>Mathematics</option>
-        </select>
+        <input id="taskInput" placeholder="Enter Task">
 
         <button onclick="addTask()">Add Task</button>
 
@@ -75,9 +88,9 @@
     <!-- NOTES -->
     <div class="section">
 
-        <h2>📝 Quick Notes</h2>
+        <h2>📝 Notes</h2>
 
-        <textarea id="noteInput" placeholder="Write quick note..."></textarea>
+        <textarea id="noteInput" placeholder="Write notes..."></textarea>
 
         <button onclick="saveNote()">Save Note</button>
 
@@ -88,18 +101,9 @@
     <!-- ANALYTICS -->
     <div class="section">
 
-        <h2>📊 Study Analytics</h2>
+        <h2>📊 Progress Analytics</h2>
 
-        <canvas id="studyChart"></canvas>
-
-    </div>
-
-    <!-- WEAK SUBJECT -->
-    <div class="section">
-
-        <h2>⚠ Weak Subject Detection</h2>
-
-        <p id="weakSubject">No weak subjects detected</p>
+        <canvas id="chart"></canvas>
 
     </div>
 
