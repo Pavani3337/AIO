@@ -2,29 +2,50 @@
 // DATA
 // =======================
 
-let subjects = JSON.parse(localStorage.getItem("subjects")) || [];
-let currentSubject = null;
+let subjects = [];
 
+try {
+    subjects = JSON.parse(localStorage.getItem("subjects")) || [];
+} catch (e) {
+    subjects = [];
+}
+
+subjects.forEach(sub => {
+    if (!sub.tasks) sub.tasks = [];
+    if (!sub.notes) sub.notes = [];
+    if (typeof sub.sessions !== "number") sub.sessions = 0;
+    if (typeof sub.streak !== "number") sub.streak = 0;
+});
+
+let currentSubject = null;
 let chart;
 
 // =======================
 // SAVE
 // =======================
 
-function saveData(){
-    localStorage.setItem("subjects", JSON.stringify(subjects));
+function saveData() {
+    localStorage.setItem(
+        "subjects",
+        JSON.stringify(subjects)
+    );
 }
 
 // =======================
 // ADD SUBJECT
 // =======================
 
-function addSubject(){
+function addSubject() {
 
-    let input = document.getElementById("subjectInput");
+    let input =
+        document.getElementById("subjectInput");
+
     let name = input.value.trim();
 
-    if(!name) return;
+    if (!name) {
+        alert("Please enter a subject name");
+        return;
+    }
 
     subjects.push({
         name: name,
@@ -35,6 +56,7 @@ function addSubject(){
     });
 
     input.value = "";
+
     saveData();
     renderSubjects();
 }
@@ -43,11 +65,12 @@ function addSubject(){
 // DELETE SUBJECT
 // =======================
 
-function deleteSubject(index){
+function deleteSubject(index) {
 
-    if(confirm("Delete this subject?")){
+    if (confirm("Delete this subject?")) {
 
-        subjects.splice(index,1);
+        subjects.splice(index, 1);
+
         saveData();
         renderSubjects();
     }
@@ -57,25 +80,42 @@ function deleteSubject(index){
 // RENDER SUBJECTS
 // =======================
 
-function renderSubjects(){
+function renderSubjects() {
 
-    let container = document.getElementById("subjectsContainer");
+    let container =
+        document.getElementById("subjectsContainer");
+
+    if (!container) return;
+
     container.innerHTML = "";
 
-    subjects.forEach((sub,index)=>{
+    subjects.forEach((sub, index) => {
 
-        let completed = (sub.tasks || []).filter(t=>t.done).length;
+        let tasks = sub.tasks || [];
+
+        let completed =
+            tasks.filter(t => t.done).length;
 
         container.innerHTML += `
+
         <div class="subjectCard">
 
-            <div class="subjectInfo" onclick="openDashboard(${index})">
+            <div
+                class="subjectInfo"
+                onclick="openDashboard(${index})"
+            >
 
                 <h2>📘 ${sub.name}</h2>
 
-                <p>📋 Total Tasks: ${(sub.tasks||[]).length}</p>
+                <p>
+                    📋 Total Tasks:
+                    ${tasks.length}
+                </p>
 
-                <p>✅ Completed: ${completed}</p>
+                <p>
+                    ✅ Completed:
+                    ${completed}
+                </p>
 
             </div>
 
@@ -83,7 +123,8 @@ function renderSubjects(){
                 Delete Subject
             </button>
 
-        </div>`;
+        </div>
+        `;
     });
 }
 
