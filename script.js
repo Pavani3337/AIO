@@ -2,9 +2,7 @@
 // DATA
 // =======================
 
-let subjects =
-JSON.parse(localStorage.getItem("subjects")) || [];
-
+let subjects = JSON.parse(localStorage.getItem("subjects")) || [];
 let currentSubject = null;
 
 let chart;
@@ -14,11 +12,7 @@ let chart;
 // =======================
 
 function saveData(){
-
-    localStorage.setItem(
-        "subjects",
-        JSON.stringify(subjects)
-    );
+    localStorage.setItem("subjects", JSON.stringify(subjects));
 }
 
 // =======================
@@ -27,30 +21,21 @@ function saveData(){
 
 function addSubject(){
 
-    let input =
-    document.getElementById("subjectInput");
-
+    let input = document.getElementById("subjectInput");
     let name = input.value.trim();
 
     if(!name) return;
 
     subjects.push({
-
-        name:name,
-
-        tasks:[],
-
-        notes:[],
-
-        streak:0,
-
-        sessions:0
+        name: name,
+        tasks: [],
+        notes: [],
+        streak: 0,
+        sessions: 0
     });
 
-    input.value="";
-
+    input.value = "";
     saveData();
-
     renderSubjects();
 }
 
@@ -60,15 +45,10 @@ function addSubject(){
 
 function deleteSubject(index){
 
-    let confirmDelete =
-    confirm("Delete this subject?");
-
-    if(confirmDelete){
+    if(confirm("Delete this subject?")){
 
         subjects.splice(index,1);
-
         saveData();
-
         renderSubjects();
     }
 }
@@ -79,36 +59,23 @@ function deleteSubject(index){
 
 function renderSubjects(){
 
-    let container =
-    document.getElementById("subjectsContainer");
-
-    container.innerHTML="";
+    let container = document.getElementById("subjectsContainer");
+    container.innerHTML = "";
 
     subjects.forEach((sub,index)=>{
 
-        let completed =
-        sub.tasks.filter(t=>t.done).length;
+        let completed = (sub.tasks || []).filter(t=>t.done).length;
 
         container.innerHTML += `
-
         <div class="subjectCard">
 
-            <div
-                class="subjectInfo"
-                onclick="openDashboard(${index})"
-            >
+            <div class="subjectInfo" onclick="openDashboard(${index})">
 
                 <h2>📘 ${sub.name}</h2>
 
-                <p>
-                    📋 Total Tasks:
-                    ${sub.tasks.length}
-                </p>
+                <p>📋 Total Tasks: ${(sub.tasks||[]).length}</p>
 
-                <p>
-                    ✅ Completed:
-                    ${completed}
-                </p>
+                <p>✅ Completed: ${completed}</p>
 
             </div>
 
@@ -116,8 +83,7 @@ function renderSubjects(){
                 Delete Subject
             </button>
 
-        </div>
-        `;
+        </div>`;
     });
 }
 
@@ -129,25 +95,21 @@ function openDashboard(index){
 
     currentSubject = subjects[index];
 
-    document.getElementById(
-        "homeScreen"
-    ).style.display="none";
+    // SAFE FIX
+    if(!currentSubject.tasks) currentSubject.tasks = [];
+    if(!currentSubject.notes) currentSubject.notes = [];
+    if(!currentSubject.sessions) currentSubject.sessions = 0;
+    if(!currentSubject.streak) currentSubject.streak = 0;
 
-    document.getElementById(
-        "dashboardScreen"
-    ).style.display="block";
+    document.getElementById("homeScreen").style.display = "none";
+    document.getElementById("dashboardScreen").style.display = "block";
 
-    document.getElementById(
-        "subjectTitle"
-    ).innerText =
-    "📘 " + currentSubject.name;
+    document.getElementById("subjectTitle").innerText =
+        "📘 " + currentSubject.name;
 
     renderTasks();
-
     renderNotes();
-
     updateStats();
-
     updateChart();
 }
 
@@ -157,13 +119,10 @@ function openDashboard(index){
 
 function goHome(){
 
-    document.getElementById(
-        "dashboardScreen"
-    ).style.display="none";
+    currentSubject = null;
 
-    document.getElementById(
-        "homeScreen"
-    ).style.display="block";
+    document.getElementById("dashboardScreen").style.display = "none";
+    document.getElementById("homeScreen").style.display = "block";
 
     renderSubjects();
 }
@@ -174,91 +133,75 @@ function goHome(){
 
 function addTask(){
 
-    let input =
-    document.getElementById("taskInput");
+    if(!currentSubject) return alert("Select a subject first!");
 
+    let input = document.getElementById("taskInput");
     let text = input.value.trim();
 
     if(!text) return;
 
     currentSubject.tasks.push({
-
-        text:text,
-
-        done:false
+        text: text,
+        done: false
     });
 
-    input.value="";
+    input.value = "";
 
     saveData();
-
     renderTasks();
-
     updateStats();
-
     updateChart();
 }
 
 function toggleTask(i){
 
-    currentSubject.tasks[i].done =
-    !currentSubject.tasks[i].done;
+    if(!currentSubject) return;
+
+    currentSubject.tasks[i].done = !currentSubject.tasks[i].done;
 
     if(currentSubject.tasks[i].done){
         confetti();
     }
 
     saveData();
-
     renderTasks();
-
     updateStats();
-
     updateChart();
 }
 
 function deleteTask(i){
 
+    if(!currentSubject) return;
+
     currentSubject.tasks.splice(i,1);
 
     saveData();
-
     renderTasks();
-
     updateStats();
-
     updateChart();
 }
 
 function renderTasks(){
 
-    let container =
-    document.getElementById("taskList");
-
-    container.innerHTML="";
+    let container = document.getElementById("taskList");
+    container.innerHTML = "";
 
     currentSubject.tasks.forEach((task,i)=>{
 
         container.innerHTML += `
-
         <div class="task">
 
             <h3>${task.text}</h3>
 
             <button onclick="toggleTask(${i})">
-
-                ${task.done ? "Undo":"Done"}
-
+                ${task.done ? "Undo" : "Done"}
             </button>
 
             <button onclick="deleteTask(${i})">
-
                 Delete
-
             </button>
 
-        </div>
-        `;
+        </div>`;
     });
 }
 
@@ -268,38 +211,30 @@ function renderTasks(){
 
 function saveNote(){
 
-    let input =
-    document.getElementById("noteInput");
+    if(!currentSubject) return;
 
+    let input = document.getElementById("noteInput");
     let text = input.value.trim();
 
     if(!text) return;
 
     currentSubject.notes.push(text);
 
-    input.value="";
+    input.value = "";
 
     saveData();
-
     renderNotes();
 }
 
 function renderNotes(){
 
-    let container =
-    document.getElementById("notesContainer");
-
-    container.innerHTML="";
+    let container = document.getElementById("notesContainer");
+    container.innerHTML = "";
 
     currentSubject.notes.forEach(note=>{
 
         container.innerHTML += `
-        <div class="note">
-
-            ${note}
-
-        </div>
-        `;
+        <div class="note">${note}</div>`;
     });
 }
 
@@ -309,24 +244,13 @@ function renderNotes(){
 
 function updateStats(){
 
-    let completed =
-    currentSubject.tasks.filter(
-        t=>t.done
-    ).length;
+    if(!currentSubject) return;
 
-    document.getElementById(
-        "taskCount"
-    ).innerText = completed;
+    let completed = currentSubject.tasks.filter(t=>t.done).length;
 
-    document.getElementById(
-        "sessionCount"
-    ).innerText =
-    currentSubject.sessions;
-
-    document.getElementById(
-        "streakCount"
-    ).innerText =
-    currentSubject.streak;
+    document.getElementById("taskCount").innerText = completed;
+    document.getElementById("sessionCount").innerText = currentSubject.sessions;
+    document.getElementById("streakCount").innerText = currentSubject.streak;
 }
 
 // =======================
@@ -334,62 +258,51 @@ function updateStats(){
 // =======================
 
 let totalSeconds = 25 * 60;
-
 let timer;
-
 let running = false;
 
 function updateTimer(){
 
-    let min =
-    Math.floor(totalSeconds/60);
+    let min = Math.floor(totalSeconds/60);
+    let sec = totalSeconds%60;
 
-    let sec =
-    totalSeconds%60;
-
-    document.getElementById(
-        "timer"
-    ).innerText =
-
-    `${String(min).padStart(2,"0")}
-    :
-    ${String(sec).padStart(2,"0")}`;
+    document.getElementById("timer").innerText =
+        `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
 }
 
 function startTimer(){
 
-    if(running) return;
+    if(running || !currentSubject) return;
 
     running = true;
 
     timer = setInterval(()=>{
 
         totalSeconds--;
-
         updateTimer();
 
-        if(totalSeconds<=0){
+        if(totalSeconds <= 0){
 
             clearInterval(timer);
-
-            running=false;
+            running = false;
 
             currentSubject.sessions++;
-
             currentSubject.streak++;
+
+            // SAVE BACK SAFE
+            let sub = subjects.find(s=>s.name === currentSubject.name);
+            if(sub){
+                sub.sessions = currentSubject.sessions;
+                sub.streak = currentSubject.streak;
+            }
 
             saveData();
 
             confetti();
+            alert("Study Session Completed!");
 
-            alert(
-                "Study Session Completed!"
-            );
-
-            totalSeconds = 25*60;
-
+            totalSeconds = 25 * 60;
             updateTimer();
-
             updateStats();
         }
 
@@ -397,20 +310,14 @@ function startTimer(){
 }
 
 function pauseTimer(){
-
     clearInterval(timer);
-
-    running=false;
+    running = false;
 }
 
 function resetTimer(){
-
     clearInterval(timer);
-
-    running=false;
-
-    totalSeconds=25*60;
-
+    running = false;
+    totalSeconds = 25 * 60;
     updateTimer();
 }
 
@@ -422,40 +329,23 @@ updateTimer();
 
 function updateChart(){
 
-    let completed =
-    currentSubject.tasks.filter(
-        t=>t.done
-    ).length;
+    if(!currentSubject) return;
 
-    let pending =
-    currentSubject.tasks.length
-    - completed;
+    let completed = currentSubject.tasks.filter(t=>t.done).length;
+    let pending = currentSubject.tasks.length - completed;
 
-    if(chart){
-        chart.destroy();
-    }
+    if(chart) chart.destroy();
 
-    let ctx =
-    document.getElementById("chart");
+    let ctx = document.getElementById("chart");
 
-    chart = new Chart(ctx,{
+    if(!ctx) return;
 
-        type:"doughnut",
-
-        data:{
-
-            labels:[
-                "Completed",
-                "Pending"
-            ],
-
-            datasets:[{
-
-                data:[
-                    completed,
-                    pending
-                ]
-
+    chart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: ["Completed", "Pending"],
+            datasets: [{
+                data: [completed, pending]
             }]
         }
     });
