@@ -89,7 +89,22 @@ function renderSubjects() {
 
     container.innerHTML = "";
 
+	let keyword = document
+    .getElementById("subjectSearch")
+    .value
+    .toLowerCase()
+    .trim();
+
+let found = false;
+
+
     subjects.forEach((sub, index) => {
+
+if (!sub.name.toLowerCase().includes(keyword)) {
+    return;
+}
+
+found = true;
 
         let tasks = sub.tasks || [];
 
