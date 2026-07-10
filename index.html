@@ -65,10 +65,19 @@
     <div class="section">
         <h2>📅 Tasks</h2>
 
-        <input id="taskInput" placeholder="Enter Study Task">
-        <button onclick="addTask()">Add Task</button>
 
-        <div id="taskList"></div>
+<input id="taskInput" placeholder="Enter Study Task">
+<button onclick="addTask()">Add Task</button>
+
+<input
+    type="text"
+    id="taskSearch"
+    placeholder="🔍 Search Task..."
+    onkeyup="renderTasks()">
+
+<div id="taskList">
+
+</div>
     </div>
 
     <!-- TIMER -->

@@ -89,6 +89,13 @@ function renderSubjects() {
 
     container.innerHTML = "";
 
+let keyword = document
+    .getElementById("taskSearch")
+    .value
+    .toLowerCase()
+    .trim();
+
+
 	let keyword = document
     .getElementById("subjectSearch")
     .value
@@ -242,7 +249,17 @@ function renderTasks(){
     let container = document.getElementById("taskList");
     container.innerHTML = "";
 
+    let keyword = document
+        .getElementById("taskSearch")
+        .value
+        .toLowerCase()
+        .trim();
+
     currentSubject.tasks.forEach((task,i)=>{
+
+        if (!task.text.toLowerCase().includes(keyword)) {
+            return;
+        }
 
         container.innerHTML += `
         <div class="task">
