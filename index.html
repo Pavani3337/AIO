@@ -19,13 +19,6 @@
 
     <h1>🧠 AI Study Assistant</h1>
 
-	<input
-    type="text"
-    id="subjectSearch"
-    placeholder="🔍 Search Subject..."
-    onkeyup="renderSubjects()">
-
-
     <div class="addSubject">
         <input id="subjectInput" placeholder="Enter Subject Name">
         <button onclick="addSubject()">Add Subject</button>
@@ -65,19 +58,10 @@
     <div class="section">
         <h2>📅 Tasks</h2>
 
+        <input id="taskInput" placeholder="Enter Study Task">
+        <button onclick="addTask()">Add Task</button>
 
-<input id="taskInput" placeholder="Enter Study Task">
-<button onclick="addTask()">Add Task</button>
-
-<input
-    type="text"
-    id="taskSearch"
-    placeholder="🔍 Search Task..."
-    onkeyup="renderTasks()">
-
-<div id="taskList">
-
-</div>
+        <div id="taskList"></div>
     </div>
 
     <!-- TIMER -->
@@ -117,3 +101,4 @@
 
 </body>
 </html>
+
