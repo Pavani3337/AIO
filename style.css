@@ -1,6 +1,6 @@
 body{
     margin:0;
-    font-family:Arial, sans-serif;
+    font-family:Arial;
     background:linear-gradient(135deg,#0f172a,#1e293b);
     color:white;
 }
@@ -14,64 +14,85 @@ h1,h2{
     margin:20px;
 }
 
+/* ================= SEARCH BOX ================= */
+
+.searchBox{
+    text-align:center;
+    margin:15px 0;
+}
+
+.searchBox input{
+    width:320px;
+    padding:12px;
+    border:none;
+    border-radius:30px;
+    outline:none;
+    font-size:16px;
+    background:white;
+    color:#333;
+}
+
+/* Task Search & Note Search */
+
+#taskSearch,
+#noteSearch{
+    width:95%;
+    max-width:450px;
+    display:block;
+    margin:10px auto 20px auto;
+    padding:12px;
+    border:none;
+    border-radius:30px;
+    outline:none;
+    font-size:15px;
+}
+
+/* ================= INPUTS ================= */
+
 input,
 textarea{
     width:300px;
-    max-width:90%;
     padding:12px;
     margin:10px;
     border:none;
     border-radius:10px;
-    outline:none;
-    font-size:16px;
 }
 
 textarea{
-    height:120px;
-    resize:vertical;
+    height:100px;
 }
 
 button{
-    padding:10px 18px;
+    padding:10px 15px;
     border:none;
     border-radius:10px;
     cursor:pointer;
     margin:5px;
     font-weight:bold;
-    transition:.3s;
 }
 
-button:hover{
-    transform:scale(1.05);
-}
-
-#subjectsContainer,
-#mainTaskList,
-#subTaskList{
+#subjectsContainer{
     display:flex;
     flex-wrap:wrap;
     justify-content:center;
 }
 
-.subjectCard,
-.mainTaskCard{
+.subjectCard{
     background:rgba(255,255,255,0.1);
     width:250px;
     padding:20px;
     margin:15px;
     border-radius:15px;
     text-align:center;
-    transition:.3s;
+    transition:0.3s;
     backdrop-filter:blur(10px);
 }
 
-.subjectCard:hover,
-.mainTaskCard:hover{
+.subjectCard:hover{
     transform:scale(1.05);
 }
 
-.subjectInfo,
-.mainTaskInfo{
+.subjectInfo{
     cursor:pointer;
 }
 
@@ -80,7 +101,6 @@ button:hover{
     justify-content:center;
     gap:20px;
     flex-wrap:wrap;
-    margin-top:20px;
 }
 
 .card{
@@ -94,21 +114,17 @@ button:hover{
 .section{
     background:rgba(255,255,255,0.08);
     width:90%;
-    max-width:850px;
+    max-width:800px;
     margin:20px auto;
     padding:20px;
     border-radius:15px;
 }
 
-.subTask{
+.task{
     background:rgba(255,255,255,0.1);
     padding:15px;
     margin-top:10px;
     border-radius:10px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
 }
 
 .note{
@@ -130,37 +146,20 @@ canvas{
     padding:10px;
 }
 
-.completed{
-    text-decoration:line-through;
-    color:#b5b5b5;
-}
+/* Mobile Responsive */
 
-@media(max-width:768px){
+@media(max-width:600px){
 
-    .dashboard{
-        flex-direction:column;
-        align-items:center;
+    input,
+    textarea,
+    .searchBox input,
+    #taskSearch,
+    #noteSearch{
+        width:90%;
     }
 
     .card{
         width:90%;
     }
 
-    .subjectCard,
-    .mainTaskCard{
-        width:90%;
-    }
-
-    #timer{
-        font-size:45px;
-    }
-
-    button{
-        width:90%;
-    }
-
-    input,
-    textarea{
-        width:90%;
-    }
 }
