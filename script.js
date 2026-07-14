@@ -716,3 +716,120 @@ renderSubjects();
 
 updateTimer();
 
+
+
+
+
+// =======================
+// SEARCH SUBJECTS
+// =======================
+
+function searchSubjects(){
+
+    let keyword = document
+        .getElementById("subjectSearch")
+        .value
+        .toLowerCase();
+
+    let cards =
+        document.querySelectorAll(".subjectCard");
+
+    cards.forEach(card=>{
+
+        let name =
+            card.querySelector("h2")
+            .innerText
+            .toLowerCase();
+
+        if(name.includes(keyword)){
+
+            card.style.display="block";
+
+        }
+        else{
+
+            card.style.display="none";
+
+        }
+
+    });
+
+}
+
+
+
+
+
+// =======================
+// SEARCH TASKS
+// =======================
+
+function searchTasks(){
+
+    let keyword =
+        document.getElementById("taskSearch")
+        .value
+        .toLowerCase();
+
+    let tasks =
+        document.querySelectorAll(".task");
+
+    tasks.forEach(task=>{
+
+        let text =
+            task.querySelector("h3")
+            .innerText
+            .toLowerCase();
+
+        if(text.includes(keyword)){
+
+            task.style.display="block";
+
+        }
+        else{
+
+            task.style.display="none";
+
+        }
+
+    });
+
+}
+
+
+
+
+// =======================
+// SEARCH NOTES
+// =======================
+
+function searchNotes(){
+
+    let keyword =
+        document.getElementById("noteSearch")
+        .value
+        .toLowerCase();
+
+    let notes =
+        document.querySelectorAll(".note");
+
+    notes.forEach(note=>{
+
+        let text =
+            note.innerText
+            .toLowerCase();
+
+        if(text.includes(keyword)){
+
+            note.style.display="block";
+
+        }
+        else{
+
+            note.style.display="none";
+
+        }
+
+    });
+
+}
