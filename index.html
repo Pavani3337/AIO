@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -15,42 +14,24 @@
 </head>
 <body>
 
-<!-- ================= HOME SCREEN ================= -->
-
+<!-- HOME SCREEN -->
 <div id="homeScreen">
 
     <h1>🧠 AI Study Assistant</h1>
 
     <div class="addSubject">
-        <input
-            id="subjectInput"
-            placeholder="Enter Subject Name">
-
-        <button onclick="addSubject()">
-            Add Subject
-        </button>
-    </div>
-
-    <!-- SUBJECT SEARCH -->
-    <div class="searchBox">
-        <input
-            type="text"
-            id="subjectSearch"
-            placeholder="🔍 Search Subject..."
-            onkeyup="searchSubjects()">
+        <input id="subjectInput" placeholder="Enter Subject Name">
+        <button onclick="addSubject()">Add Subject</button>
     </div>
 
     <div id="subjectsContainer"></div>
 
 </div>
 
-<!-- ================= DASHBOARD ================= -->
-
+<!-- DASHBOARD -->
 <div id="dashboardScreen" style="display:none;">
 
-    <button onclick="goHome()">
-        ⬅ Back
-    </button>
+    <button onclick="goHome()">⬅ Back</button>
 
     <h1 id="subjectTitle"></h1>
 
@@ -73,35 +54,17 @@
 
     </div>
 
-    <!-- ================= TASKS ================= -->
-
+    <!-- TASKS -->
     <div class="section">
-
         <h2>📅 Tasks</h2>
 
-        <!-- TASK SEARCH -->
-        <input
-            type="text"
-            id="taskSearch"
-            placeholder="🔍 Search Task..."
-            onkeyup="searchTasks()">
-
-        <br>
-
-        <input
-            id="taskInput"
-            placeholder="Enter Study Task">
-
-        <button onclick="addTask()">
-            Add Task
-        </button>
+        <input id="taskInput" placeholder="Enter Study Task">
+        <button onclick="addTask()">Add Task</button>
 
         <div id="taskList"></div>
-
     </div>
 
-    <!-- ================= TIMER ================= -->
-
+    <!-- TIMER -->
     <div class="section">
 
         <h2>⏳ Pomodoro Timer</h2>
@@ -114,41 +77,22 @@
 
     </div>
 
-    <!-- ================= NOTES ================= -->
-
+    <!-- NOTES -->
     <div class="section">
 
         <h2>📝 Notes</h2>
 
-        <!-- NOTE SEARCH -->
-        <input
-            type="text"
-            id="noteSearch"
-            placeholder="🔍 Search Notes..."
-            onkeyup="searchNotes()">
-
-        <br>
-
-        <textarea
-            id="noteInput"
-            placeholder="Write notes..."></textarea>
-
-        <button onclick="saveNote()">
-            Save Note
-        </button>
+        <textarea id="noteInput" placeholder="Write notes..."></textarea>
+        <button onclick="saveNote()">Save Note</button>
 
         <div id="notesContainer"></div>
 
     </div>
 
-    <!-- ================= CHART ================= -->
-
+    <!-- CHART -->
     <div class="section">
-
         <h2>📊 Progress Analytics</h2>
-
         <canvas id="chart"></canvas>
-
     </div>
 
 </div>
