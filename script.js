@@ -1,835 +1,399 @@
-// =====================================
+// =======================
 // DATA
-// =====================================
+// =======================
 
-let subjects = JSON.parse(localStorage.getItem("subjects")) || [];
+let subjects = [];
 
-subjects.forEach(subject => {
+try {
+    subjects = JSON.parse(localStorage.getItem("subjects")) || [];
+} catch (e) {
+    subjects = [];
+}
 
-    if (!subject.mainTasks) subject.mainTasks = [];
-    if (!subject.notes) subject.notes = [];
-    if (!subject.sessions) subject.sessions = 0;
-    if (!subject.streak) subject.streak = 0;
-
+subjects.forEach(sub => {
+    if (!sub.tasks) sub.tasks = [];
+    if (!sub.notes) sub.notes = [];
+    if (typeof sub.sessions !== "number") sub.sessions = 0;
+    if (typeof sub.streak !== "number") sub.streak = 0;
 });
 
 let currentSubject = null;
-let currentMainTask = null;
-let chart = null;
+let chart;
 
-
-// =====================================
+// =======================
 // SAVE
-// =====================================
+// =======================
 
-function saveData(){
-
+function saveData() {
     localStorage.setItem(
         "subjects",
         JSON.stringify(subjects)
     );
-
 }
 
+// =======================
+// ADD SUBJECT
+// =======================
 
-// =====================================
-// SUBJECTS
-// =====================================
-
-function addSubject(){
+function addSubject() {
 
     let input =
         document.getElementById("subjectInput");
 
     let name = input.value.trim();
 
-    if(name==""){
-        alert("Enter Subject Name");
+    if (!name) {
+        alert("Please enter a subject name");
         return;
     }
 
     subjects.push({
-
-        name:name,
-
-        mainTasks:[],
-
-        notes:[],
-
-        sessions:0,
-
-        streak:0
-
+        name: name,
+        tasks: [],
+        notes: [],
+        streak: 0,
+        sessions: 0
     });
 
-    input.value="";
+    input.value = "";
 
     saveData();
-
     renderSubjects();
-
 }
 
+// =======================
+// DELETE SUBJECT
+// =======================
 
+function deleteSubject(index) {
 
-function deleteSubject(index){
+    if (confirm("Delete this subject?")) {
 
-    if(confirm("Delete Subject?")){
-
-        subjects.splice(index,1);
+        subjects.splice(index, 1);
 
         saveData();
-
         renderSubjects();
-
     }
-
 }
 
+// =======================
+// RENDER SUBJECTS
+// =======================
 
-
-// =====================================
-// HOME SCREEN
-// =====================================
-
-function renderSubjects(){
+function renderSubjects() {
 
     let container =
         document.getElementById("subjectsContainer");
 
-    container.innerHTML="";
+    if (!container) return;
 
-    subjects.forEach((subject,index)=>{
+    container.innerHTML = "";
 
-        let completed=0;
-        let total=0;
+    subjects.forEach((sub, index) => {
 
-        subject.mainTasks.forEach(main=>{
+        let tasks = sub.tasks || [];
 
-            total+=main.subTasks.length;
+        let completed =
+            tasks.filter(t => t.done).length;
 
-            completed+=
-                main.subTasks.filter(
-                    t=>t.done
-                ).length;
-
-        });
-
-        container.innerHTML+=`
+        container.innerHTML += `
 
         <div class="subjectCard">
 
             <div
-            class="subjectInfo"
-            onclick="openMainTasks(${index})">
+                class="subjectInfo"
+                onclick="openDashboard(${index})"
+            >
 
-            <h2>📘 ${subject.name}</h2>
+                <h2>📘 ${sub.name}</h2>
 
-            <p>
-            📂 Main Tasks :
-            ${subject.mainTasks.length}
-            </p>
+                <p>
+                    📋 Total Tasks:
+                    ${tasks.length}
+                </p>
 
-            <p>
-            ✅ Progress :
-            ${completed}/${total}
-            </p>
+                <p>
+                    ✅ Completed:
+                    ${completed}
+                </p>
 
             </div>
 
-            <button
-            onclick="deleteSubject(${index})">
-            Delete
+            <button onclick="deleteSubject(${index})">
+                Delete Subject
             </button>
 
         </div>
-
         `;
-
     });
-
 }
 
+// =======================
+// OPEN DASHBOARD
+// =======================
 
+function openDashboard(index){
 
-// =====================================
-// OPEN SUBJECT
-// =====================================
+    currentSubject = subjects[index];
 
-function openMainTasks(index){
+    // SAFE FIX
+    if(!currentSubject.tasks) currentSubject.tasks = [];
+    if(!currentSubject.notes) currentSubject.notes = [];
+    if(!currentSubject.sessions) currentSubject.sessions = 0;
+    if(!currentSubject.streak) currentSubject.streak = 0;
 
-    currentSubject=subjects[index];
+    document.getElementById("homeScreen").style.display = "none";
+    document.getElementById("dashboardScreen").style.display = "block";
 
-    document.getElementById(
-        "homeScreen"
-    ).style.display="none";
+    document.getElementById("subjectTitle").innerText =
+        "📘 " + currentSubject.name;
 
-    document.getElementById(
-        "mainTaskScreen"
-    ).style.display="block";
-
-    document.getElementById(
-        "mainTaskTitle"
-    ).innerHTML=
-    "📘 "+currentSubject.name;
-
-    renderMainTasks();
-
+    renderTasks();
     renderNotes();
-
     updateStats();
-
     updateChart();
-
 }
 
-
-
-// =====================================
-// GO HOME
-// =====================================
+// =======================
+// BACK HOME
+// =======================
 
 function goHome(){
 
-    currentSubject=null;
+    currentSubject = null;
 
-    document.getElementById(
-        "mainTaskScreen"
-    ).style.display="none";
-
-    document.getElementById(
-        "homeScreen"
-    ).style.display="block";
+    document.getElementById("dashboardScreen").style.display = "none";
+    document.getElementById("homeScreen").style.display = "block";
 
     renderSubjects();
-
 }
 
-// =====================================
-// MAIN TASKS
-// =====================================
+// =======================
+// TASKS
+// =======================
 
-function addMainTask(){
+function addTask(){
 
-    let input =
-        document.getElementById("mainTaskInput");
+    if(!currentSubject) return alert("Select a subject first!");
 
-    let name = input.value.trim();
+    let input = document.getElementById("taskInput");
+    let text = input.value.trim();
 
-    if(name=="") return;
+    if(!text) return;
 
-    currentSubject.mainTasks.push({
-
-        name:name,
-
-        subTasks:[]
-
+    currentSubject.tasks.push({
+        text: text,
+        done: false
     });
 
-    input.value="";
+    input.value = "";
 
     saveData();
-
-    renderMainTasks();
-
-    renderSubjects();
-
-}
-
-
-
-function deleteMainTask(index){
-
-    if(confirm("Delete Main Task?")){
-
-        currentSubject.mainTasks.splice(index,1);
-
-        saveData();
-
-        renderMainTasks();
-
-        renderSubjects();
-
-    }
-
-}
-
-
-
-function renderMainTasks(){
-
-    let container=
-        document.getElementById("mainTaskList");
-
-    container.innerHTML="";
-
-    currentSubject.mainTasks.forEach((task,index)=>{
-
-        let completed=
-            task.subTasks.filter(
-                t=>t.done
-            ).length;
-
-        container.innerHTML+=`
-
-        <div class="mainTaskCard">
-
-            <div
-            class="mainTaskInfo"
-            onclick="openSubTasks(${index})">
-
-            <h2>📂 ${task.name}</h2>
-
-            <p>
-            Progress :
-            ${completed}/${task.subTasks.length}
-            </p>
-
-            </div>
-
-            <button
-            onclick="deleteMainTask(${index})">
-
-            Delete
-
-            </button>
-
-        </div>
-
-        `;
-
-    });
-
-}
-
-
-
-// =====================================
-// OPEN SUBTASK SCREEN
-// =====================================
-
-function openSubTasks(index){
-
-    currentMainTask=
-        currentSubject.mainTasks[index];
-
-    document.getElementById(
-        "mainTaskScreen"
-    ).style.display="none";
-
-    document.getElementById(
-        "subTaskScreen"
-    ).style.display="block";
-
-    document.getElementById(
-        "subTaskTitle"
-    ).innerHTML=
-    "📂 "+currentMainTask.name;
-
-    renderSubTasks();
-
-}
-
-
-
-function backToMainTasks(){
-
-    document.getElementById(
-        "subTaskScreen"
-    ).style.display="none";
-
-    document.getElementById(
-        "mainTaskScreen"
-    ).style.display="block";
-
-    renderMainTasks();
-
+    renderTasks();
     updateStats();
-
     updateChart();
-
 }
 
+function toggleTask(i){
 
+    if(!currentSubject) return;
 
-// =====================================
-// SUBTASKS
-// =====================================
+    currentSubject.tasks[i].done = !currentSubject.tasks[i].done;
 
-function addSubTask(){
-
-    let input=
-        document.getElementById("subTaskInput");
-
-    let text=input.value.trim();
-
-    if(text=="") return;
-
-    currentMainTask.subTasks.push({
-
-        text:text,
-
-        done:false
-
-    });
-
-    input.value="";
-
-    saveData();
-
-    renderSubTasks();
-
-    renderMainTasks();
-
-    renderSubjects();
-
-}
-
-
-
-function toggleSubTask(index){
-
-    let task=
-        currentMainTask.subTasks[index];
-
-    task.done=!task.done;
-
-    if(task.done){
-
+    if(currentSubject.tasks[i].done){
         confetti();
-
     }
 
     saveData();
-
-    renderSubTasks();
-
-    renderMainTasks();
-
-    renderSubjects();
-
+    renderTasks();
+    updateStats();
+    updateChart();
 }
 
+function deleteTask(i){
 
+    if(!currentSubject) return;
 
-function deleteSubTask(index){
-
-    currentMainTask.subTasks.splice(index,1);
+    currentSubject.tasks.splice(i,1);
 
     saveData();
-
-    renderSubTasks();
-
-    renderMainTasks();
-
-    renderSubjects();
-
+    renderTasks();
+    updateStats();
+    updateChart();
 }
 
+function renderTasks(){
 
+    let container = document.getElementById("taskList");
+    container.innerHTML = "";
 
-function renderSubTasks(){
+    currentSubject.tasks.forEach((task,i)=>{
 
-    let container=
-        document.getElementById("subTaskList");
+        container.innerHTML += `
+        <div class="task">
 
-    container.innerHTML="";
+            <h3>${task.text}</h3>
 
-    currentMainTask.subTasks.forEach((task,index)=>{
-
-        container.innerHTML+=`
-
-        <div class="subTask">
-
-            <span
-            class="${
-                task.done
-                ?"completed"
-                :""
-            }">
-
-            ${task.text}
-
-            </span>
-
-            <div>
-
-            <button
-            onclick="toggleSubTask(${index})">
-
-            ${
-                task.done
-                ?"Undo"
-                :"Done"
-            }
-
+            <button onclick="toggleTask(${i})">
+                ${task.done ? "Undo" : "Done"}
             </button>
 
-            <button
-            onclick="deleteSubTask(${index})">
-
-            Delete
-
+            <button onclick="deleteTask(${i})">
+                Delete
             </button>
 
-            </div>
-
-        </div>
-
-        `;
-
+        </div>`;
     });
-
 }
 
-
-// =====================================
+// =======================
 // NOTES
-// =====================================
+// =======================
 
 function saveNote(){
 
-    let input=document.getElementById("noteInput");
+    if(!currentSubject) return;
 
-    let text=input.value.trim();
+    let input = document.getElementById("noteInput");
+    let text = input.value.trim();
 
-    if(text=="") return;
+    if(!text) return;
 
     currentSubject.notes.push(text);
 
-    input.value="";
+    input.value = "";
 
     saveData();
-
     renderNotes();
-
 }
 
 function renderNotes(){
 
-    let container=document.getElementById("notesContainer");
-
-    container.innerHTML="";
+    let container = document.getElementById("notesContainer");
+    container.innerHTML = "";
 
     currentSubject.notes.forEach(note=>{
 
-        container.innerHTML+=`
-        <div class="note">
-
-        ${note}
-
-        </div>
-        `;
-
+        container.innerHTML += `
+        <div class="note">${note}</div>`;
     });
-
 }
 
-
-
-// =====================================
-// STATISTICS
-// =====================================
+// =======================
+// STATS
+// =======================
 
 function updateStats(){
 
-    let total=0;
-    let completed=0;
+    if(!currentSubject) return;
 
-    currentSubject.mainTasks.forEach(main=>{
+    let completed = currentSubject.tasks.filter(t=>t.done).length;
 
-        total+=main.subTasks.length;
-
-        completed+=main.subTasks.filter(
-            t=>t.done
-        ).length;
-
-    });
-
-    document.getElementById("taskCount").innerHTML=completed;
-
-    document.getElementById("sessionCount").innerHTML=
-    currentSubject.sessions;
-
-    document.getElementById("streakCount").innerHTML=
-    currentSubject.streak;
-
+    document.getElementById("taskCount").innerText = completed;
+    document.getElementById("sessionCount").innerText = currentSubject.sessions;
+    document.getElementById("streakCount").innerText = currentSubject.streak;
 }
 
-
-
-// =====================================
+// =======================
 // TIMER
-// =====================================
+// =======================
 
-let totalSeconds=25*60;
-
+let totalSeconds = 25 * 60;
 let timer;
-
-let running=false;
+let running = false;
 
 function updateTimer(){
 
-    let min=Math.floor(totalSeconds/60);
+    let min = Math.floor(totalSeconds/60);
+    let sec = totalSeconds%60;
 
-    let sec=totalSeconds%60;
-
-    document.getElementById("timer").innerHTML=
-
-    `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
-
+    document.getElementById("timer").innerText =
+        `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
 }
 
 function startTimer(){
 
-    if(running) return;
+    if(running || !currentSubject) return;
 
-    running=true;
+    running = true;
 
-    timer=setInterval(()=>{
+    timer = setInterval(()=>{
 
         totalSeconds--;
-
         updateTimer();
 
-        if(totalSeconds<=0){
+        if(totalSeconds <= 0){
 
             clearInterval(timer);
-
-            running=false;
+            running = false;
 
             currentSubject.sessions++;
-
             currentSubject.streak++;
+
+            // SAVE BACK SAFE
+            let sub = subjects.find(s=>s.name === currentSubject.name);
+            if(sub){
+                sub.sessions = currentSubject.sessions;
+                sub.streak = currentSubject.streak;
+            }
 
             saveData();
 
             confetti();
-
             alert("Study Session Completed!");
 
-            updateStats();
-
-            totalSeconds=25*60;
-
+            totalSeconds = 25 * 60;
             updateTimer();
-
+            updateStats();
         }
 
     },1000);
-
 }
 
 function pauseTimer(){
-
     clearInterval(timer);
-
-    running=false;
-
+    running = false;
 }
 
 function resetTimer(){
-
     clearInterval(timer);
-
-    running=false;
-
-    totalSeconds=25*60;
-
+    running = false;
+    totalSeconds = 25 * 60;
     updateTimer();
-
 }
 
 updateTimer();
 
-
-
-// =====================================
+// =======================
 // CHART
-// =====================================
+// =======================
 
 function updateChart(){
 
-    let completed=0;
+    if(!currentSubject) return;
 
-    let pending=0;
-
-    currentSubject.mainTasks.forEach(main=>{
-
-        completed+=main.subTasks.filter(
-            t=>t.done
-        ).length;
-
-        pending+=main.subTasks.filter(
-            t=>!t.done
-        ).length;
-
-    });
+    let completed = currentSubject.tasks.filter(t=>t.done).length;
+    let pending = currentSubject.tasks.length - completed;
 
     if(chart) chart.destroy();
 
-    chart=new Chart(
+    let ctx = document.getElementById("chart");
 
-        document.getElementById("chart"),
+    if(!ctx) return;
 
-        {
-
-            type:"doughnut",
-
-            data:{
-
-                labels:[
-
-                    "Completed",
-
-                    "Pending"
-
-                ],
-
-                datasets:[{
-
-                    data:[
-
-                        completed,
-
-                        pending
-
-                    ]
-
-                }]
-
-            }
-
+    chart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: ["Completed", "Pending"],
+            datasets: [{
+                data: [completed, pending]
+            }]
         }
-
-    );
-
+    });
 }
 
-
-
-// =====================================
-// INITIALIZE
-// =====================================
+// =======================
+// INIT
+// =======================
 
 renderSubjects();
-
-updateTimer();
-
-
-
-
-
-// =======================
-// SEARCH SUBJECTS
-// =======================
-
-function searchSubjects(){
-
-    let keyword = document
-        .getElementById("subjectSearch")
-        .value
-        .toLowerCase();
-
-    let cards =
-        document.querySelectorAll(".subjectCard");
-
-    cards.forEach(card=>{
-
-        let name =
-            card.querySelector("h2")
-            .innerText
-            .toLowerCase();
-
-        if(name.includes(keyword)){
-
-            card.style.display="block";
-
-        }
-        else{
-
-            card.style.display="none";
-
-        }
-
-    });
-
-}
-
-
-
-
-
-// =======================
-// SEARCH TASKS
-// =======================
-
-function searchTasks(){
-
-    let keyword =
-        document.getElementById("taskSearch")
-        .value
-        .toLowerCase();
-
-    let tasks =
-        document.querySelectorAll(".task");
-
-    tasks.forEach(task=>{
-
-        let text =
-            task.querySelector("h3")
-            .innerText
-            .toLowerCase();
-
-        if(text.includes(keyword)){
-
-            task.style.display="block";
-
-        }
-        else{
-
-            task.style.display="none";
-
-        }
-
-    });
-
-}
-
-
-
-
-// =======================
-// SEARCH NOTES
-// =======================
-
-function searchNotes(){
-
-    let keyword =
-        document.getElementById("noteSearch")
-        .value
-        .toLowerCase();
-
-    let notes =
-        document.querySelectorAll(".note");
-
-    notes.forEach(note=>{
-
-        let text =
-            note.innerText
-            .toLowerCase();
-
-        if(text.includes(keyword)){
-
-            note.style.display="block";
-
-        }
-        else{
-
-            note.style.display="none";
-
-        }
-
-    });
-
-}
