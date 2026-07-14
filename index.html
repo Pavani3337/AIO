@@ -13,19 +13,15 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 </head>
-
 <body>
 
-<!-- ========================= -->
-<!-- HOME SCREEN -->
-<!-- ========================= -->
+<!-- ================= HOME SCREEN ================= -->
 
 <div id="homeScreen">
 
     <h1>🧠 AI Study Assistant</h1>
 
     <div class="addSubject">
-
         <input
             id="subjectInput"
             placeholder="Enter Subject Name">
@@ -33,30 +29,36 @@
         <button onclick="addSubject()">
             Add Subject
         </button>
+    </div>
 
+    <!-- SUBJECT SEARCH -->
+    <div class="searchBox">
+        <input
+            type="text"
+            id="subjectSearch"
+            placeholder="🔍 Search Subject..."
+            onkeyup="searchSubjects()">
     </div>
 
     <div id="subjectsContainer"></div>
 
 </div>
 
-<!-- ========================= -->
-<!-- MAIN TASK SCREEN -->
-<!-- ========================= -->
+<!-- ================= DASHBOARD ================= -->
 
-<div id="mainTaskScreen" style="display:none;">
+<div id="dashboardScreen" style="display:none;">
 
     <button onclick="goHome()">
         ⬅ Back
     </button>
 
-    <h1 id="mainTaskTitle"></h1>
+    <h1 id="subjectTitle"></h1>
 
     <div class="dashboard">
 
         <div class="card">
             <h2 id="taskCount">0</h2>
-            <p>✅ Completed Subtasks</p>
+            <p>✅ Completed Tasks</p>
         </div>
 
         <div class="card">
@@ -71,25 +73,34 @@
 
     </div>
 
-    <!-- MAIN TASKS -->
+    <!-- ================= TASKS ================= -->
 
     <div class="section">
 
-        <h2>📂 Main Tasks</h2>
+        <h2>📅 Tasks</h2>
+
+        <!-- TASK SEARCH -->
+        <input
+            type="text"
+            id="taskSearch"
+            placeholder="🔍 Search Task..."
+            onkeyup="searchTasks()">
+
+        <br>
 
         <input
-            id="mainTaskInput"
-            placeholder="Enter Main Task">
+            id="taskInput"
+            placeholder="Enter Study Task">
 
-        <button onclick="addMainTask()">
-            Add Main Task
+        <button onclick="addTask()">
+            Add Task
         </button>
 
-        <div id="mainTaskList"></div>
+        <div id="taskList"></div>
 
     </div>
 
-    <!-- TIMER -->
+    <!-- ================= TIMER ================= -->
 
     <div class="section">
 
@@ -103,11 +114,20 @@
 
     </div>
 
-    <!-- NOTES -->
+    <!-- ================= NOTES ================= -->
 
     <div class="section">
 
         <h2>📝 Notes</h2>
+
+        <!-- NOTE SEARCH -->
+        <input
+            type="text"
+            id="noteSearch"
+            placeholder="🔍 Search Notes..."
+            onkeyup="searchNotes()">
+
+        <br>
 
         <textarea
             id="noteInput"
@@ -121,43 +141,13 @@
 
     </div>
 
-    <!-- CHART -->
+    <!-- ================= CHART ================= -->
 
     <div class="section">
 
         <h2>📊 Progress Analytics</h2>
 
         <canvas id="chart"></canvas>
-
-    </div>
-
-</div>
-
-<!-- ========================= -->
-<!-- SUBTASK SCREEN -->
-<!-- ========================= -->
-
-<div id="subTaskScreen" style="display:none;">
-
-    <button onclick="backToMainTasks()">
-        ⬅ Back
-    </button>
-
-    <h1 id="subTaskTitle"></h1>
-
-    <div class="section">
-
-        <h2>✅ Subtasks</h2>
-
-        <input
-            id="subTaskInput"
-            placeholder="Enter Subtask">
-
-        <button onclick="addSubTask()">
-            Add Subtask
-        </button>
-
-        <div id="subTaskList"></div>
 
     </div>
 
