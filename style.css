@@ -14,41 +14,6 @@ h1,h2{
     margin:20px;
 }
 
-/* ================= SEARCH BOX ================= */
-
-.searchBox{
-    text-align:center;
-    margin:15px 0;
-}
-
-.searchBox input{
-    width:320px;
-    padding:12px;
-    border:none;
-    border-radius:30px;
-    outline:none;
-    font-size:16px;
-    background:white;
-    color:#333;
-}
-
-/* Task Search & Note Search */
-
-#taskSearch,
-#noteSearch{
-    width:95%;
-    max-width:450px;
-    display:block;
-    margin:10px auto 20px auto;
-    padding:12px;
-    border:none;
-    border-radius:30px;
-    outline:none;
-    font-size:15px;
-}
-
-/* ================= INPUTS ================= */
-
 input,
 textarea{
     width:300px;
@@ -144,22 +109,4 @@ canvas{
     background:white;
     border-radius:10px;
     padding:10px;
-}
-
-/* Mobile Responsive */
-
-@media(max-width:600px){
-
-    input,
-    textarea,
-    .searchBox input,
-    #taskSearch,
-    #noteSearch{
-        width:90%;
-    }
-
-    .card{
-        width:90%;
-    }
-
 }
