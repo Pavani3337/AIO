@@ -89,7 +89,19 @@ function renderSubjects() {
 
     container.innerHTML = "";
 
+let keyword =
+document.getElementById("searchSubject")
+.value
+.toLowerCase();
+
     subjects.forEach((sub, index) => {
+
+if(
+    !sub.name
+    .toLowerCase()
+    .includes(keyword)
+)
+return;
 
         let tasks = sub.tasks || [];
 
@@ -227,7 +239,21 @@ function renderTasks(){
     let container = document.getElementById("taskList");
     container.innerHTML = "";
 
+
+let keyword =
+document.getElementById("taskSearch")
+.value
+.toLowerCase();
+
     currentSubject.tasks.forEach((task,i)=>{
+
+
+if(
+!task.text
+.toLowerCase()
+.includes(keyword)
+)
+return;
 
         container.innerHTML += `
         <div class="task">
@@ -272,18 +298,60 @@ function renderNotes(){
     let container = document.getElementById("notesContainer");
     container.innerHTML = "";
 
-    currentSubject.notes.forEach(note=>{
+let keyword =
+document.getElementById("noteSearch")
+.value
+.toLowerCase();
+
+currentSubject.notes.forEach((note,index)=>{
+
+
+if(
+!note
+.toLowerCase()
+.includes(keyword)
+)
+return;
 
         let div = document.createElement("div");
 
         div.className = "note";
 
-        div.textContent = note;
+div.innerHTML=`
+${note}
+
+<br><br>
+
+<button onclick="deleteNote(${index})">
+Delete
+</button>
+`;
 
         container.appendChild(div);
 
     });
 }
+
+
+
+
+function deleteNote(index){
+
+if(
+!confirm("Delete this note?")
+)
+return;
+
+currentSubject.notes.splice(index,1);
+
+saveData();
+
+renderNotes();
+
+}
+
+
+
 
 // =======================
 // STATS

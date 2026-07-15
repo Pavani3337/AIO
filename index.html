@@ -24,6 +24,12 @@
         <button onclick="addSubject()">Add Subject</button>
     </div>
 
+<input
+    id="searchSubject"
+    placeholder="🔍 Search Subject"
+    onkeyup="renderSubjects()"
+>
+
     <div id="subjectsContainer"></div>
 
 </div>
@@ -61,6 +67,11 @@
         <input id="taskInput" placeholder="Enter Study Task">
         <button onclick="addTask()">Add Task</button>
 
+<input
+id="taskSearch"
+placeholder="🔍 Search Task"
+onkeyup="renderTasks()">
+
         <div id="taskList"></div>
     </div>
 
@@ -84,6 +95,13 @@
 
         <textarea id="noteInput" placeholder="Write notes..."></textarea>
         <button onclick="saveNote()">Save Note</button>
+
+
+<input
+id="noteSearch"
+placeholder="🔍 Search Notes"
+onkeyup="renderNotes()">
+
 
         <div id="notesContainer"></div>
 
