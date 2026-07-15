@@ -274,8 +274,14 @@ function renderNotes(){
 
     currentSubject.notes.forEach(note=>{
 
-        container.innerHTML += `
-        <div class="note">${note}</div>`;
+        let div = document.createElement("div");
+
+        div.className = "note";
+
+        div.textContent = note;
+
+        container.appendChild(div);
+
     });
 }
 
