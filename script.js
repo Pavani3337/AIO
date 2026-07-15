@@ -96,6 +96,12 @@ document.getElementById("searchSubject")
 
     subjects.forEach((sub, index) => {
 
+    let keyword = document.getElementById("searchSubject").value.trim().toLowerCase();
+
+    if (keyword !== "" && !sub.name.toLowerCase().includes(keyword)) {
+        return;
+    }
+
 if(
     !sub.name
     .toLowerCase()
@@ -247,6 +253,12 @@ document.getElementById("taskSearch")
 
     currentSubject.tasks.forEach((task,i)=>{
 
+    let keyword = document.getElementById("taskSearch").value.trim().toLowerCase();
+
+    if(keyword !== "" && !task.text.toLowerCase().includes(keyword)){
+        return;
+    }
+
 
 if(
 !task.text
@@ -304,6 +316,12 @@ document.getElementById("noteSearch")
 .toLowerCase();
 
 currentSubject.notes.forEach((note,index)=>{
+
+    let keyword = document.getElementById("noteSearch").value.trim().toLowerCase();
+
+    if(keyword !== "" && !note.toLowerCase().includes(keyword)){
+        return;
+    }
 
 
 if(
